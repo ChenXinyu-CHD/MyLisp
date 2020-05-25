@@ -1,0 +1,6 @@
+; 测试文件，作为程序的输入
+
+; 先测试函数调用是否正常
+((lambda[list] {list(lambda[x y] x)})
+	((lambda[x y] {lambda[sel]{sel x y}})
+	1 2))
