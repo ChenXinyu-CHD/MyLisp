@@ -30,6 +30,6 @@ bool Enviroment::insert(const std::string& name, ValPtr val) {
 }
 
 std::shared_ptr<Enviroment> Enviroment::get_root() {
-	static auto root = std::shared_ptr<Enviroment>();
+	static auto root = std::shared_ptr<Enviroment>(new Enviroment());
 	return root;
 }

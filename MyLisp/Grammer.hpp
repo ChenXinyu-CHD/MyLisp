@@ -46,7 +46,7 @@ struct Lambda final : Grammer {
 	}
 	ValPtr eval(std::shared_ptr<Enviroment> env) const override;
 	std::vector<std::string> args;
-	GramPtr body;
+	std::vector<GramPtr> body;
 };
 
 struct Condition final : Grammer {

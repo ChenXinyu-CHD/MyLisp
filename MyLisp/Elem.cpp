@@ -1,6 +1,7 @@
 #include "Elem.hpp"
 #include <cctype>
 #include <climits>
+#include <stdexcept>
 
 using namespace std;
 
@@ -53,7 +54,7 @@ namespace {
 	ElemPtr parse(Iter& begin, const Iter& end) {
 		skip_bc(begin, end);
 		if (begin == end) {
-			throw exception("there's no code");
+			throw runtime_error("there's no code");
 		} else if (!is_l(*begin)) {
 			return make_shared<Atom>(begin, end);
 		} else {
@@ -81,9 +82,10 @@ List::List(
 	char l = *(begin++);
 	while (begin != end && !is_r(*begin)) {
 		val.push_back(parse(begin, end));
+		skip_bc(begin, end);
 	}
 	if (begin == end || !match(l, *(begin++))) {
-		throw exception("barcket not match");
+		throw runtime_error("barcket not match");
 	}
 }
 
@@ -93,11 +95,13 @@ std::shared_ptr<List> parse_file(const string& code) {
 	const Iter end = code.end();
 	while (begin != end) {
 		skip_bc(begin, end);
-		if (is_l(*begin)) {
-			auto list = make_shared<List>(begin, end);
-			result->val.push_back(list);
-		} else {
-			throw exception("not a list");
+		if (begin != end) {
+			if (is_l(*begin)) {
+				auto list = make_shared<List>(begin, end);
+				result->val.push_back(list);
+			} else {
+				throw runtime_error("not a list");
+			}
 		}
 	}
 	return result;

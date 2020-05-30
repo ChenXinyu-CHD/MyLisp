@@ -119,6 +119,7 @@
       <InlineFunctionExpansion>Default</InlineFunctionExpansion>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <DisableLanguageExtensions>true</DisableLanguageExtensions>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -147,6 +148,7 @@
     <ClInclude Include="Elem.hpp" />
     <ClInclude Include="Enviroment.hpp" />
     <ClInclude Include="Grammer.hpp" />
+    <ClInclude Include="regist_func.hpp" />
     <ClInclude Include="Value.hpp" />
   </ItemGroup>
   <ItemGroup>
@@ -154,7 +156,8 @@
     <ClCompile Include="Enviroment.cpp" />
     <ClCompile Include="eval.cpp" />
     <ClCompile Include="Grammer.cpp" />
-    <ClCompile Include="test.cpp" />
+    <ClCompile Include="regist_func.cpp" />
+    <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="test.mlsp" />

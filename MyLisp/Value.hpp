@@ -16,21 +16,23 @@ struct Value {
 using ValPtr = std::shared_ptr<Value>;
 
 struct Number final : Value {
+	using Type = double;
 	ValueType type() const override {
 		return ValueType::number;
 	}
-	double val = 0.0;
+	Type val = 0.0;
 };
 
 struct Callable final : Value {
 	ValueType type() const override {
 		return ValueType::callable;
 	}
+	using Function = std::function<ValPtr(std::vector<ValPtr>)>;
 	// 大致分为内置函数和自定义函数两类
 	// 内置函数是C++编写的代码，其产生方式不尽相同
 	// 自定义函数一定是通过目标语言的lambda表达式生成的
 	// 方便起见统一用std::function抽象
-	std::function<ValPtr(std::vector<ValPtr>)> val;
+	Function val;
 	size_t argsSize = 0;
 };
 
@@ -39,6 +41,8 @@ struct Boolean final : Value {
 		return ValueType::boolean;
 	}
 	bool val;
+	Boolean() = default;
+	Boolean(bool val) : val(val) {}
 };
 
 struct Nil final : Value {
