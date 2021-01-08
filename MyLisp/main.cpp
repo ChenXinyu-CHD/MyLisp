@@ -1,6 +1,6 @@
-#include "Elem.hpp"
-#include "Grammer.hpp"
-#include "regist_func.hpp"
+#include "Token.hpp"
+// #include "Grammer.hpp"
+// #include "regist_func.hpp"
 #include <iostream>
 #include <fstream>
 #include <climits>
@@ -8,6 +8,39 @@
 
 using namespace std;
 
+int main() {
+	ifstream file("test.mlsp");
+	string str(
+		istreambuf_iterator<char>{file},
+		istreambuf_iterator<char>()
+	);
+	Lexer lexer(str);
+
+	while (lexer.now().type != Token::END) {
+		auto token = lexer.now();
+		switch (token.type) {
+		case Token::ID:
+			cout << "ID:" <<get<string>(token.val) << endl;
+			break;
+		case Token::NUM:
+			cout << "NUM:" << get<int>(token.val) << endl;
+			break;
+		case Token::LB:
+			cout << '(' << endl;
+			break;
+		case Token::RB:
+			cout << ')' << endl;
+			break;
+		default:
+			break;
+		}
+		lexer.next();
+	}
+
+	return 0;
+}
+
+/*
 int main() {
 	install_std_func();
 	ifstream file("test.mlsp");
@@ -39,3 +72,4 @@ int main() {
 
 	return 0;
 }
+*/

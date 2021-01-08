@@ -15,9 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Elem.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="Grammer.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -33,21 +30,24 @@
     <ClCompile Include="main.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="Lexer.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Elem.hpp">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="Grammer.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Value.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Enviroment.hpp">
+    <ClInclude Include="regist_func.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="regist_func.hpp">
+    <ClInclude Include="Token.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Enviroment.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
