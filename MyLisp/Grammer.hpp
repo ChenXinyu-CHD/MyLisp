@@ -1,89 +1,67 @@
-#pragma once
+#ifndef MY_LISP_GRAMMER_HPP
+#define MY_LISP_GRAMMER_HPP
 
 #include "Token.hpp"
-#include "Enviroment.hpp"
 #include <vector>
 
-enum class GrammerType {
-	defination,
-	assignment,
-	lambda,
-	condition,
-	application,
-	constant,
-	variable
-};
-
 struct Grammer {
-	virtual GrammerType type() const = 0;
-	virtual ValPtr eval(std::shared_ptr<Enviroment> env) const = 0;
+	enum Type {
+		def, lamb, cond, call, cons, var,
+	};
+	using Ptr = std::shared_ptr<Grammer>;
+	Type type;
+	Grammer(Type t) : type(t) {}
 	virtual ~Grammer() = default;
 };
 
-using GramPtr = std::shared_ptr<Grammer>;
-
 struct Defination final : Grammer {
-	GrammerType type() const override {
-		return GrammerType::defination;
-	}
-	ValPtr eval(std::shared_ptr<Enviroment> env) const override;
 	std::string name;
-	GramPtr value;
-};
-
-struct Assignment final : Grammer {
-	GrammerType type() const override {
-		return GrammerType::assignment;
+	Ptr value;
+	Defination(std::string&& name, Ptr&& value) :
+		Grammer(def), name(name), value(value) {
 	}
-	ValPtr eval(std::shared_ptr<Enviroment> env) const override;
-	GramPtr name;	// 左值可能比较复杂，不仅可以是个变量名
-	GramPtr value;
 };
 
 struct Lambda final : Grammer {
-	GrammerType type() const override {
-		return GrammerType::lambda;
-	}
-	ValPtr eval(std::shared_ptr<Enviroment> env) const override;
 	std::vector<std::string> args;
-	std::vector<GramPtr> body;
+	std::vector<Ptr> body;
+	Lambda(std::vector<std::string>&& args, std::vector<Ptr>&& body) :
+		Grammer(lamb), args(args), body(body) {
+	}
 };
 
 struct Condition final : Grammer {
-	GrammerType type() const override {
-		return GrammerType::condition;
+	Ptr condition;
+	Ptr onTrue;
+	Ptr onFalse;
+
+	Condition(Ptr condition, Ptr onTrue, Ptr onFalse) :
+		Grammer(cond), condition(condition), onTrue(onTrue), onFalse(onFalse) {
 	}
-	ValPtr eval(std::shared_ptr<Enviroment> env) const override;
-	GramPtr condition;
-	GramPtr onTrue;
-	GramPtr onFalse;
 };
 
-struct Application final : Grammer {
-	GrammerType type() const override {
-		return GrammerType::application;
+struct Calling final : Grammer {
+	Ptr callable;
+	std::vector<Ptr> args;
+	Calling(Ptr&& callable, std::vector<Ptr>&& args) :
+		Grammer(call), callable(callable), args(args) {
 	}
-	ValPtr eval(std::shared_ptr<Enviroment> env) const override;
-	GramPtr callable;	// 其是否可调用需要后续步骤检验
-	std::vector<GramPtr> args;
 };
 
 struct Constant final : Grammer {
-	GrammerType type() const override {
-		return GrammerType::constant;
-	}
-	ValPtr eval(std::shared_ptr<Enviroment> env) const override {
-		return val;
-	}
-	ValPtr val;
+	int val;
+	Constant(int val) : Grammer(cons), val(val) {}
 };
 
 struct Variable final : Grammer {
-	GrammerType type() const override {
-		return GrammerType::variable;
-	}
-	ValPtr eval(std::shared_ptr<Enviroment> env) const override;
 	std::string name;
+	Variable(std::string&& str) : Grammer(var), name(str) {}
 };
 
-GramPtr analyze(ElemPtr elem);
+struct ParseErr : std::exception {
+	ParseErr(char const* const what) : std::exception(what) {}
+};
+
+std::vector<std::shared_ptr<Defination>> parse(Lexer& lexer);
+
+#endif // !MY_LISP_GRAMMER_HPP

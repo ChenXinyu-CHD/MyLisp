@@ -10,7 +10,7 @@
 
 struct Token {
 	enum Type {
-		NUM, LB, RB, ID, END
+		NUM, LB, RB, ID, END, DEF, IF, LAM
 	};
 	Type type;
 	std::variant<int, std::string> val;
@@ -23,11 +23,14 @@ struct Token {
 	static Token Rb() {
 		return Token(RB, 0);
 	}
-	static Token Id(std::string val) {
+	static Token Id(std::string&& val) {
 		return Token(ID, val);
 	}
 	static Token End() {
 		return Token(END, 0);
+	}
+	static Token Key(Type t) {
+		return Token(t, 0);
 	}
 private:
 	Token(Type t, int val) : type(t), val(val) {}
@@ -48,42 +51,5 @@ public:
 	Token now() const;
 	Token next();
 };
-
-/*
-enum class ElemType { atom, list };
-
-struct Elem {
-	virtual ElemType type() const = 0;
-	virtual ~Elem() = default;
-};
-
-using ElemPtr = std::shared_ptr<Elem>;
-
-struct Atom final : Elem {
-	Atom(
-		std::string::const_iterator& begin,
-		const std::string::const_iterator& end
-	);
-	ElemType type() const override {
-		return ElemType::atom;
-	}
-	std::string val;
-	Atom() = default;
-};
-
-struct List final : Elem {
-	List(
-		std::string::const_iterator& begin,
-		const std::string::const_iterator& end
-	);
-	ElemType type() const override {
-		return ElemType::list;
-	}
-	std::deque<ElemPtr> val;
-	List() = default;
-};
-
-std::shared_ptr<List> parse_file(const std::string& code);
-*/
 
 #endif // !MY_LISP_TOKEN_HPP
