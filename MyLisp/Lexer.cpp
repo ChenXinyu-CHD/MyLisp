@@ -1,13 +1,13 @@
 #include "Token.hpp"
 
-#include <sstream>
+#include <istream>
 #include <stack>
 #include <map>
 
 using namespace std;
 
-Lexer::Lexer(string code):
-	in(code), token(Token::End()) {
+Lexer::Lexer(istream& in):
+	in(in), token(Token::End()) {
 	this->next();
 }
 
@@ -22,10 +22,10 @@ namespace {
 
 	void skip_useless(istream& in) {
 		while (in) {
-			if (is_com(in.peek())) {
-				while (in && in.get() != '\n')
-					continue;
-			} else if (isspace(in.peek())){
+			char ch = in.peek();
+			if (is_com(ch)) {
+				in.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+			} else if (isspace(ch)){
 				while (in && isspace(in.peek()))
 					in.get();
 			} else {
@@ -76,12 +76,13 @@ const Token& Lexer::next() {
 		} else {
 			string str;
 			while (
-				!isspace(in.peek()) &&
-				!is_lb(in.peek()) &&
-				!is_rb(in.peek()) &&
-				!is_com(in.peek())
+				!isspace(ch) &&
+				!is_lb(ch) &&
+				!is_rb(ch) &&
+				!is_com(ch)
 			) {
 				str += in.get();
+				ch = in.peek();
 			}
 			static const map<string, Token::Type> keys{
 				{"if", Token::IF},

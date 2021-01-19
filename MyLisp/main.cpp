@@ -60,11 +60,7 @@ void print(shared_ptr<Grammer> grammer) {
 
 int main() {
 	ifstream file("test.mlsp");
-	string str(
-		istreambuf_iterator<char>{file},
-		istreambuf_iterator<char>()
-	);
-	Lexer lexer(str);
+	Lexer lexer(file);
 	for (auto& def : parse(lexer)) {
 		print(def);
 	}

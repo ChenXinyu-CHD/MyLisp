@@ -44,11 +44,11 @@ struct LexErr : std::exception {
 
 class Lexer final {
 private:
-	std::istringstream in;
+	std::istream& in;
 	std::stack<char> brackets;
 	Token token;
 public:
-	Lexer(std::string code);
+	Lexer(std::istream& in);
 	const Token& now() const;
 	const Token& next();
 };
