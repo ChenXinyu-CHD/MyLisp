@@ -1,31 +1,32 @@
-#pragma once
+#ifndef MY_LISP_VALUE
+#define MY_LISP_VALUE
 
 #include <functional>
 #include <memory>
 #include <vector>
 
-enum class ValueType {
-	number, callable, boolean, nil
-};
+#include "Token.hpp"
 
 struct Value {
-	virtual ValueType type() const = 0;
+	enum Type {
+		number, callable, boolean, nil
+	};
+	virtual Type type() const = 0;
 	virtual ~Value() = default;
 };
 
 using ValPtr = std::shared_ptr<Value>;
 
 struct Number final : Value {
-	using Type = double;
-	ValueType type() const override {
-		return ValueType::number;
+	Type type() const override {
+		return Value::number;
 	}
-	Type val = 0.0;
+	Token::Number val = 0.0;
 };
 
 struct Callable final : Value {
-	ValueType type() const override {
-		return ValueType::callable;
+	Type type() const override {
+		return Value::callable;
 	}
 	using Function = std::function<ValPtr(std::vector<ValPtr>)>;
 	// 大致分为内置函数和自定义函数两类
@@ -37,8 +38,8 @@ struct Callable final : Value {
 };
 
 struct Boolean final : Value {
-	ValueType type() const override {
-		return ValueType::boolean;
+	Type type() const override {
+		return Value::boolean;
 	}
 	bool val;
 	Boolean() = default;
@@ -46,7 +47,10 @@ struct Boolean final : Value {
 };
 
 struct Nil final : Value {
-	ValueType type() const override {
-		return ValueType::nil;
+	Type type() const override {
+		return Value::nil;
 	}
 };
+
+#endif // !MY_LISP_VALUE
+

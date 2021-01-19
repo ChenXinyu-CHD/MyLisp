@@ -9,12 +9,13 @@
 #include <sstream>
 
 struct Token {
+	using Number = double;
 	enum Type {
 		NUM, LB, RB, ID, END, DEF, IF, LAM
 	};
 	Type type;
-	std::variant<int, std::string> val;
-	static Token Num(int val) {
+	std::variant<Number, std::string> val;
+	static Token Num(Number val) {
 		return Token(NUM, val);
 	}
 	static Token Lb() {
@@ -33,7 +34,7 @@ struct Token {
 		return Token(t, 0);
 	}
 private:
-	Token(Type t, int val) : type(t), val(val) {}
+	Token(Type t, Number val) : type(t), val(val) {}
 	Token(Type t, std::string val) : type(t), val(val) {}
 };
 
@@ -48,8 +49,8 @@ private:
 	Token token;
 public:
 	Lexer(std::string code);
-	Token now() const;
-	Token next();
+	const Token& now() const;
+	const Token& next();
 };
 
 #endif // !MY_LISP_TOKEN_HPP

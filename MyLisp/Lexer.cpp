@@ -1,7 +1,6 @@
 #include "Token.hpp"
 
 #include <sstream>
-#include <iostream>
 #include <stack>
 #include <map>
 
@@ -12,7 +11,7 @@ Lexer::Lexer(string code):
 	this->next();
 }
 
-Token Lexer::now() const {
+const Token& Lexer::now() const {
 	return token;
 }
 
@@ -50,7 +49,7 @@ namespace {
 	}
 }
 
-Token Lexer::next() {
+const Token& Lexer::next() {
 	skip_useless(in);
 	if (!in) {
 		token = Token::End();
@@ -71,7 +70,7 @@ Token Lexer::next() {
 				token = Token::Rb();
 			}
 		} else if (isdigit(ch)) {
-			int val = 0;
+			Token::Number val = 0;
 			in >> val;
 			token = Token::Num(val);
 		} else {

@@ -45,8 +45,8 @@ void print(shared_ptr<Grammer> grammer) {
 		print(cond->onFalse);
 		break;
 	}
-	case Grammer::cons: {
-		auto cons = reinterpret_pointer_cast<Constant>(grammer);
+	case Grammer::num: {
+		auto cons = reinterpret_pointer_cast<Number>(grammer);
 		cout << "Constant:" << cons->val << endl;
 		break;
 	}

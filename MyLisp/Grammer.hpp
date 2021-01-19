@@ -2,11 +2,12 @@
 #define MY_LISP_GRAMMER_HPP
 
 #include "Token.hpp"
+
 #include <vector>
 
 struct Grammer {
-	enum Type {
-		def, lamb, cond, call, cons, var,
+	enum Type { 
+		def, lamb, cond, call, num, var
 	};
 	using Ptr = std::shared_ptr<Grammer>;
 	Type type;
@@ -48,9 +49,9 @@ struct Calling final : Grammer {
 	}
 };
 
-struct Constant final : Grammer {
-	int val;
-	Constant(int val) : Grammer(cons), val(val) {}
+struct Number final : Grammer {
+	Token::Number val;
+	Number(Token::Number val) : Grammer(num), val(val) {}
 };
 
 struct Variable final : Grammer {

@@ -12,8 +12,7 @@ namespace {
 	Ptr<Lambda> parse_lam(Lexer& lexer);
 
 	Ptr<Grammer> parse_tuple(Lexer& lexer) {
-		Token token = lexer.now();
-		switch (token.type) {
+		switch (lexer.now().type) {
 		case Token::LB: case Token::ID:
 			return parse_call(lexer);
 		case Token::DEF:
@@ -32,7 +31,7 @@ namespace {
 		lexer.next();
 		switch (token.type) {
 		case Token::NUM:
-			return make_shared<Constant>(get<int>(token.val));
+			return make_shared<Number>(get<Token::Number>(token.val));
 		case Token::ID:
 			return make_shared<Variable>(get<string>(move(token).val));
 		case Token::LB:
@@ -53,7 +52,7 @@ namespace {
 	}
 
 	Ptr<Defination> parse_def_var(Lexer& lexer) {
-		string name = move(get<string>(lexer.now().val));
+		string name = get<string>(lexer.now().val);
 		lexer.next();
 		return make_shared<Defination>(move(name), parse_atom(lexer));
 	}
@@ -81,7 +80,7 @@ namespace {
 		if (token.type != Token::ID) {
 			throw ParseErr("语法错误：函数名不是合法的标识符");
 		} else {
-			name = move(get<string>(token.val));
+			name = get<string>(move(token).val);
 		}
 
 		lexer.next();
@@ -117,9 +116,7 @@ namespace {
 	}
 
 	Ptr<Calling> parse_call(Lexer& lexer) {
-		// lexer.next();
 		Ptr<Grammer> callable = parse_atom(lexer);
-		Token token = lexer.now();
 		vector<Ptr<Grammer>> params = parse_atoms_seq(lexer);
 		if (lexer.now().type != Token::RB) {
 			throw ParseErr("语法错误：缺少语句末尾的括号");
@@ -172,8 +169,7 @@ vector<Ptr<Defination>> parse(Lexer& lexer) {
 		lexer.now().type != Token::END &&
 		lexer.now().type == Token::LB
 	) {
-		auto token = lexer.next();
-		if (token.type != Token::DEF) {
+		if (lexer.next().type != Token::DEF) {
 			throw ParseErr("语法错误：全局作用域内只能存在函数定义或变量定义语句。");
 		} else {
 			result.push_back(parse_def(lexer));
