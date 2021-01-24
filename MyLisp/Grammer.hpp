@@ -7,7 +7,7 @@
 
 struct Grammer {
 	enum Type { 
-		def, lamb, cond, call, num, var
+		def, lamb, cond, call, num, var, mod
 	};
 	using Ptr = std::shared_ptr<Grammer>;
 	Type type;
@@ -43,15 +43,15 @@ struct Condition final : Grammer {
 
 struct Calling final : Grammer {
 	Ptr callable;
-	std::vector<Ptr> args;
-	Calling(Ptr&& callable, std::vector<Ptr>&& args) :
-		Grammer(call), callable(callable), args(args) {
+	std::vector<Ptr> params;
+	Calling(Ptr&& callable, std::vector<Ptr>&& params) :
+		Grammer(call), callable(callable), params(params) {
 	}
 };
 
-struct Number final : Grammer {
+struct ConstNumber final : Grammer {
 	Token::Number val;
-	Number(Token::Number val) : Grammer(num), val(val) {}
+	ConstNumber(Token::Number val) : Grammer(num), val(val) {}
 };
 
 struct Variable final : Grammer {
@@ -59,10 +59,15 @@ struct Variable final : Grammer {
 	Variable(std::string&& str) : Grammer(var), name(str) {}
 };
 
+struct Model final : Grammer {
+	std::vector<std::shared_ptr<Defination>> defs;
+	Model(std::vector<std::shared_ptr<Defination>>&& defs) : Grammer(mod), defs(defs) {}
+};
+
 struct ParseErr : std::exception {
 	ParseErr(char const* const what) : std::exception(what) {}
 };
 
-std::vector<std::shared_ptr<Defination>> parse(Lexer& lexer);
+std::shared_ptr<Model> parse(Lexer& lexer);
 
 #endif // !MY_LISP_GRAMMER_HPP

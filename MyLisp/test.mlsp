@@ -14,18 +14,33 @@
 ;	5	;所求的阶乘数目
 ;)
 
-(define (cons x y)
-	(lambda (getter) (getter x y)))
+;(define (cons x y)
+;	(lambda (getter) (getter x y)))
 
-(define (car list)
-	(list (lambda (x y) x)))
+;(define (car list)
+;	(list (lambda (x y) x)))
 
-(define (cdr list)
-	(list (lambda (x y) y)))
+;(define (cdr list)
+;	(list (lambda (x y) y)))
 
-(define (main)	; 整体测试代码，求斐波那契数列
-	(define max 10)
-	(define (iter n r0 r1)
-		(if (= n max) r0
-			(iter (+ n 1) r1 (+ r0 r1))))
-	(iter 0 0 1))
+;(define (main)	; 整体测试代码，求斐波那契数列
+;	(define max 10)
+;	(define (iter n r0 r1)
+;		(if (= n max) r0
+;			(iter (+ n 1) r1 (+ r0 r1))))
+;	(print(iter 0 0 1)))
+
+(define (main)
+	(print(
+		(
+			(lambda[h] (
+				(lambda[f] (h (lambda[v] ((f f) v))))
+				(lambda[f] (h (lambda[v] ((f f) v))))
+			));Y组合子本体
+			(lambda[f](lambda[n]
+				(if (= n 0) 1 (* n (f (- n 1))))
+			));阶乘
+		)	;Y组合子实现的阶乘
+		5	;所求的阶乘数目
+	))
+)

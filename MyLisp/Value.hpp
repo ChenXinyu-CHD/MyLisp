@@ -2,55 +2,61 @@
 #define MY_LISP_VALUE
 
 #include <functional>
+#include <exception>
 #include <memory>
 #include <vector>
 
 #include "Token.hpp"
+#include "Grammer.hpp"
 
 struct Value {
 	enum Type {
 		number, callable, boolean, nil
 	};
-	virtual Type type() const = 0;
+	// virtual Type type() const = 0;
+	const Type type = nil;
+	Value(Type t) : type(t) {}
 	virtual ~Value() = default;
+	static std::shared_ptr<Value> Nil() {
+		static auto nil = std::make_shared<Value>(Value::nil);
+		return nil;
+	}
 };
 
-using ValPtr = std::shared_ptr<Value>;
-
 struct Number final : Value {
-	Type type() const override {
-		return Value::number;
-	}
+	Number(Token::Number val) : Value(number), val(val) {}
 	Token::Number val = 0.0;
 };
 
-struct Callable final : Value {
-	Type type() const override {
-		return Value::callable;
-	}
-	using Function = std::function<ValPtr(std::vector<ValPtr>)>;
-	// 大致分为内置函数和自定义函数两类
-	// 内置函数是C++编写的代码，其产生方式不尽相同
-	// 自定义函数一定是通过目标语言的lambda表达式生成的
-	// 方便起见统一用std::function抽象
-	Function val;
-	size_t argsSize = 0;
-};
-
 struct Boolean final : Value {
-	Type type() const override {
-		return Value::boolean;
-	}
 	bool val;
-	Boolean() = default;
-	Boolean(bool val) : val(val) {}
+	Boolean(bool val) : Value(boolean), val(val) {}
+	static std::shared_ptr<Value> True() {
+		static auto val = std::make_shared<Boolean>(true);
+		return val;
+	}
+	static std::shared_ptr<Value> False() {
+		static auto val = std::make_shared<Boolean>(false);
+		return val;
+	}
 };
 
-struct Nil final : Value {
-	Type type() const override {
-		return Value::nil;
-	}
+struct Callable : Value {
+	using Function = std::function<
+		std::shared_ptr<Value>(
+			std::vector<std::shared_ptr<Value>>& args
+		)
+	>;
+
+	Function invoke;
+
+	Callable(Function invoke) : Value(callable), invoke(invoke) {}
+};
+
+std::shared_ptr<Callable> analyze(std::shared_ptr<Model> definations);
+
+struct RuntimeErr : std::exception {
+	RuntimeErr(char const* const what) : std::exception(what) {}
 };
 
 #endif // !MY_LISP_VALUE
-

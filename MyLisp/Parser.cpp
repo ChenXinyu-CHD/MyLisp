@@ -31,7 +31,7 @@ namespace {
 		lexer.next();
 		switch (token.type) {
 		case Token::NUM:
-			return make_shared<Number>(get<Token::Number>(token.val));
+			return make_shared<ConstNumber>(get<Token::Number>(token.val));
 		case Token::ID:
 			return make_shared<Variable>(get<string>(move(token).val));
 		case Token::LB:
@@ -163,7 +163,7 @@ namespace {
 	}
 }
 
-vector<Ptr<Defination>> parse(Lexer& lexer) {
+Ptr<Model> parse(Lexer& lexer) {
 	vector<Ptr<Defination>> result;
 	while (
 		lexer.now().type != Token::END &&
@@ -176,5 +176,5 @@ vector<Ptr<Defination>> parse(Lexer& lexer) {
 		}
 	}
 
-	return result;
+	return make_shared<Model>(move(result));
 }

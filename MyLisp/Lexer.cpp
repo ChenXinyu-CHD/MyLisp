@@ -23,6 +23,7 @@ namespace {
 	void skip_useless(istream& in) {
 		while (in) {
 			char ch = in.peek();
+
 			if (is_com(ch)) {
 				in.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 			} else if (isspace(ch)){

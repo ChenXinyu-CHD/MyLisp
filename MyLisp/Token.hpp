@@ -6,7 +6,7 @@
 #include <variant>
 #include <exception>
 #include <stack>
-#include <sstream>
+#include <istream>
 
 struct Token {
 	using Number = double;
